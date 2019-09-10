@@ -33,5 +33,14 @@ class Config
     public static function getRedisSessionNamespace() : string
     {
         return $_ENV['REDIS_SESSION_NEMASPACE'];
-    }   
+    }
+    
+    /**
+     * get payment service url from .env
+     * @return string
+     */
+    public static function getPaymentUrl()
+    {
+        return $_ENV['PAYMENT_URL'];
+    }
 }
