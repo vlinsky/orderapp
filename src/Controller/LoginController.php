@@ -7,7 +7,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Utils\Token;
 use App\Utils\Response;
 use Psr\Log\LoggerInterface;
-
+use App\Config\ResponseStatus;
+use App\Config\Error;
 /**
  * LoginController
  * 
@@ -21,7 +22,7 @@ class LoginController extends AbstractController
     public function login(RedisSession $rsession, LoggerInterface $logger)
     {
         try {
-            $output = ['status'=>'OK'];
+            $output = ['status'=>ResponseStatus::STATUS_OK];
             
             $userData = array(
                 'id' => '181718',
@@ -35,8 +36,8 @@ class LoginController extends AbstractController
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
-            $output['status'] = 'ERROR';
-            $output['msg'] = 'internal error'.$e->getMessage();
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::INTERNAL_ERROR;
             
             return new Response($output, 500);
         }
