@@ -15,6 +15,10 @@ use App\Orders\OrderNotFoundException;
 use App\Orders\OrderStatus;
 use App\Config\ResponseStatus;
 use App\Config\Error;
+use Symfony\Component\HttpClient\HttpClient;
+use App\Orders\Payment;
+use App\Orders\PaymentException;
+
 
 /**
  * OrderController
@@ -38,9 +42,14 @@ class OrderController extends AbstractController
             $order = new Order($userData->id, $em);
             $orderEntity = $order->create();
             
+            $payment = new Payment(HttpClient::create());
+            $newOrderStatus = $payment->makePayment($orderEntity->getId(), $orderEntity->getUserId(), $token);
+            
+            $order->setStatus($newOrderStatus, $orderEntity->getId());
+            
             $output['order'] = [
                 'orderId' => $orderEntity->getId(),
-                'status' => $orderEntity->getStatus()
+                'status' => $newOrderStatus
             ];
             
             return new Response($output);
@@ -56,11 +65,18 @@ class OrderController extends AbstractController
             $output['msg'] = Error::CANNOT_CREATE_ORDER_ERROR;
             
             return new Response($output, 503);
+        } catch (PaymentException $e) {
+            $logger->error($e->getMessage());
+            
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::CANNOT_CREATE_ORDER_ERROR;
+            
+            //here should be done order rollback
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
             $output['status'] = ResponseStatus::STATUS_ERROR;
-            $output['msg'] = Error::INTERNAL_ERROR;
+            $output['msg'] = Error::INTERNAL_ERROR.$e->getMessage();
             
             return new Response($output, 500);
         }
