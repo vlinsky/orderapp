@@ -13,6 +13,8 @@ use App\Utils\Response;
 use App\Orders\OrderBaseException;
 use App\Orders\OrderNotFoundException;
 use App\Orders\OrderStatus;
+use App\Config\ResponseStatus;
+use App\Config\Error;
 
 /**
  * OrderController
@@ -27,7 +29,7 @@ class OrderController extends AbstractController
     public function create(RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
     {   
         try {
-            $output = ['status'=>'OK'];
+            $output = ['status'=>ResponseStatus::STATUS_OK];
             
             $token = $request->get("token");
             $userData = json_decode($rsession->get($token));
@@ -43,22 +45,22 @@ class OrderController extends AbstractController
             
             return new Response($output);
         } catch (TokenExpiredException $e) {
-            $output['status'] = 'ERROR';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
             $output['msg'] = $e->getMessage();
             
             return new Response($output, 401);
         } catch (OrderBaseException $e) {
             $logger->error($e->getMessage());
             
-            $output['status'] = 'ERROR';
-            $output['msg'] = 'cannot crate order';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::CANNOT_CREATE_ORDER_ERROR;
             
             return new Response($output, 503);
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
-            $output['status'] = 'ERROR';
-            $output['msg'] = 'internal error';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::INTERNAL_ERROR;
             
             return new Response($output, 500);
         }
@@ -70,7 +72,7 @@ class OrderController extends AbstractController
     public function cancel($orderId, RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
     {
         try {
-            $output = ['status'=>'OK'];
+            $output = ['status'=>ResponseStatus::STATUS_OK];
             
             $token = $request->get("token");
             
@@ -82,22 +84,22 @@ class OrderController extends AbstractController
             
             return new Response($output);
         } catch (TokenExpiredException $e) {
-            $output['status'] = 'ERROR';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
             $output['msg'] = $e->getMessage();
             
             return new Response($output, 401);
         } catch (OrderNotFoundException $e) {
             $logger->error($e->getMessage());
             
-            $output['status'] = 'ERROR';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
             $output['msg'] = $e->getMessage();
             
             return new Response($output, 503);
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
-            $output['status'] = 'ERROR';
-            $output['msg'] = 'internal error';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::INTERNAL_ERROR;
             
             return new Response($output, 500);
         }
@@ -109,7 +111,7 @@ class OrderController extends AbstractController
     public function getStatus($orderId, RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
     {
         try {
-            $output = ['status'=>'OK'];
+            $output = ['status'=>ResponseStatus::STATUS_OK];
             
             $token = $request->get("token");
             
@@ -123,22 +125,22 @@ class OrderController extends AbstractController
             
             return new Response($output);
         } catch (TokenExpiredException $e) {
-            $output['status'] = 'ERROR';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
             $output['msg'] = $e->getMessage();
             
             return new Response($output, 401);
         } catch (OrderNotFoundException $e) {
             $logger->error($e->getMessage());
             
-            $output['status'] = 'ERROR';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
             $output['msg'] = $e->getMessage();
             
             return new Response($output, 503);
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
-            $output['status'] = 'ERROR';
-            $output['msg'] = 'internal error';
+            $output['status'] = ResponseStatus::STATUS_ERROR;
+            $output['msg'] = Error::INTERNAL_ERROR;
             
             return new Response($output, 500);
         }
