@@ -28,6 +28,13 @@ use App\Orders\PaymentException;
 class OrderController extends AbstractController
 {
     /**
+     * Create order REST api
+     * 
+     * usage : /order/create/
+     * method : POST 
+     * params : 
+     *      token - user access token
+     * 
      * @Route("/order/create/", name="ordercreate", methods={"POST"})
      */
     public function create(RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
@@ -83,6 +90,14 @@ class OrderController extends AbstractController
     }
     
     /**
+     * Cancel order REST api
+     * 
+     * usage : /order/cancel/{orderId}/ 
+     *      {orderId} - should be replaced with order id
+     * method : POST 
+     * params : 
+     *      token - user access token
+     *      
      * @Route("/order/cancel/{orderId}/", name="ordercancel", methods={"POST"})
      */
     public function cancel($orderId, RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
@@ -122,6 +137,14 @@ class OrderController extends AbstractController
     }
     
     /**
+     * Get order status REST api
+     * 
+     * usage : /order/status/{orderId}/ 
+     *      {orderId} - should be replaced with order id
+     * method : GET 
+     * params : 
+     *      token - user access token
+     *      
      * @Route("/order/status/{orderId}/", name="ordergetstatus", methods={"GET"})
      */
     public function getStatus($orderId, RedisSession $rsession, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
