@@ -1,0 +1,53 @@
+version: '3'
+services:
+  webapp:
+    container_name: orderapp
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    working_dir: /usr/src/app
+    volumes:
+      - ./public:/usr/src/app
+      - ./config:/usr/src/config
+      - ./src:/usr/src/src
+      - ./tests:/usr/src/tests
+      - ./vendor:/usr/src/vendor
+      - ./.env:/usr/src/.env
+      - ./var:/usr/src/var
+      - ./bin:/usr/src/bin
+    tty: true
+    depends_on:
+      - db
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - ./public:/usr/src/app
+      - ./config:/usr/src/config
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./var/log:/var/log/nginx
+    tty: true
+    depends_on:
+      - webapp
+      - redis
+      - db
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    hostname: redis
+  db:
+    image: mysql
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: orders
+      MYSQL_ROOT_PASSWORD: root
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
