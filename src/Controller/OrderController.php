@@ -79,6 +79,7 @@ class OrderController extends AbstractController
             $output['msg'] = Error::CANNOT_CREATE_ORDER_ERROR;
             
             //here should be done order rollback
+            return new Response($output, 503);
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
             
