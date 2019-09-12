@@ -10,6 +10,8 @@ docker-compose up
 
 docker excec orderapp php /usr/src/bin/console doctrine:migrations:migrate  
 
+change PAYMENT_URL in .env file  
+  
 ##REST API
 
 User login /user/login/   
