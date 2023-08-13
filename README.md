@@ -1,4 +1,6 @@
 # orderapp
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvlinsky%2Forderapp.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvlinsky%2Forderapp?ref=badge_shield)
+
 order microservice
 
 ##installation :
@@ -37,3 +39,6 @@ Create order /order/create/
      params :  
      	token - user access token  
      return : json  
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvlinsky%2Forderapp.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvlinsky%2Forderapp?ref=badge_large)
